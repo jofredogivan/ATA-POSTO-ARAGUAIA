@@ -294,6 +294,10 @@
         const logoPDF = await loadImage('assets/logo_nova.png');
         const watermarkImg = await loadImage('icon.png');
 
+        // Captura e formatação da data movida com segurança para dentro do escopo do PDF
+        const dataInput = v('#dataPlantao');
+        const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
+
         // =========================================================
         // PÁGINA 1: GERAÇÃO DA CAPA GRÁFICA DO PDF (IGUAL À IMAGEM)
         // =========================================================
@@ -370,10 +374,6 @@
         doc.setFont("Helvetica", "normal");
         doc.setFontSize(10);
         doc.setTextColor(160, 160, 160);
-        
-        // CORREÇÃO AQUI: Captura das variáveis movidas para dentro do escopo da execução do PDF
-        const dataInput = v('#dataPlantao');
-        const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
         doc.text(`Data de Emissão: ${dataFormatada}`, 20, pageHeight - 23);
 
         // Restaura as cores de texto normais para o relatório
