@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e1e1e">
@@ -20,24 +20,24 @@
 </head>
 <body>
 
-<div class="capa" id="capa" style="display: block;">
+<div class="capa" id="capa">
     <div class="info-capa">
         <h1 class="titulo-capa">ATA POSTO ARAGUAIA - SOBRADINHO</h1>
         <h2 class="subtitulo-capa">PASSAGEM DE SERVIÇO</h2>
         <p class="texto-capa">Neste documento estão registrados todos os procedimentos adotados por este plantão, incluindo o recebimento do posto, equipe, checklist de materiais essenciais, controle de intervalos, registro de ocorrências, elogios, reclamações, sugestões/avisos e a passagem final do posto.</p>
-        <p class="data-capa">Desenvolvido para: <strong>Japan Security / Monitoramento</strong></p>
-        <p class="data-capa">Data de Emissão: 26 de maio de 2026</p>
+        <p class="data-capa">Desenvolvido para: **Japan Security / Monitoramento**</p>
+        <p class="data-capa">Data: 26 de maio de 2026</p>
     </div>
-    <div class="center" style="margin-top: 30px; text-align: center;">
-        <button class="btn primary" type="button" onclick="iniciarAta()">Iniciar Ata</button>
+    <div class="center">
+        <button class="btn primary" onclick="iniciarAta()">Iniciar Ata</button>
     </div>
 </div>
 
 <div class="ata-content" id="conteudo" style="display: none;">
-    <h1 style="color: #ffffff; text-align: center; margin-top: 20px;">Gerador de Ata Simplificado</h1>
+    <h1>Gerador de Ata Simplificado</h1>
     <form id="ataForm">
         
-        <div class="form-page" id="page-1" style="display: none;">
+        <div class="form-page active" id="page-1">
             <section class="card">
                 <h2>1. Recebimento do Posto</h2>
                 <div class="input-group">
@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-2" style="display: none;">
+        <div class="form-page" id="page-2">
             <section class="card">
                 <h2>3. Material do Plantão</h2>
                 <ul id="checklist" class="checklist-list">
@@ -100,7 +100,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-3" style="display: none;">
+        <div class="form-page" id="page-3">
             <section class="card">
                 <h2>5. Ocorrências do Plantão</h2>
                 <div id="ocorrencias">
@@ -131,7 +131,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-4" style="display: none;">
+        <div class="form-page" id="page-4">
             <section class="card">
                 <h2>7. Reclamações</h2>
                 <div id="reclamacoes">
@@ -161,7 +161,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-5" style="display: none;">
+        <div class="form-page" id="page-5">
             <section class="card">
                 <h2>Passagem do Posto (Fechamento)</h2>
                 <div class="input-group">
@@ -177,7 +177,7 @@
             <div class="form-nav">
                 <button type="button" class="btn secondary" onclick="prevPage()">Anterior</button>
             </div>
-            <div class="center final-buttons" style="margin-top: 20px; text-align: center;">
+            <div class="center final-buttons">
                 <button type="button" class="btn primary" onclick="gerarPdfFormal()">Gerar PDF Formal</button>
             </div>
         </div>
@@ -190,11 +190,11 @@
 
     function showPage(pageNumber) {
         document.querySelectorAll('.form-page').forEach(page => {
-            page.style.display = 'none';
+            page.classList.remove('active');
         });
         const pageElement = document.getElementById(`page-${pageNumber}`);
         if (pageElement) {
-            pageElement.style.display = 'block';
+            pageElement.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
@@ -214,15 +214,13 @@
     }
 
     function iniciarAta() {
-        // Garante a transição visual mesmo se houver erros externos de carregamento de scripts
         document.getElementById('capa').style.display = 'none';
         document.getElementById('conteudo').style.display = 'block';
         
+        // Define data atual no formato ideal
         const hoje = "2026-05-26";
-        const inputData = document.getElementById('dataPlantao');
-        if (inputData) inputData.value = hoje;
+        document.getElementById('dataPlantao').value = hoje;
         
-        currentPage = 1;
         showPage(1);
     }
 
@@ -270,25 +268,16 @@
     }
 
     async function gerarPdfFormal() {
-        // Validação preventiva caso o navegador continue bloqueando a biblioteca externa
-        if (!window.jspdf || !window.jspdf.jsPDF) {
-            alert("A biblioteca de geração de PDF foi bloqueada pelo seu navegador ou extensões de AdBlock. Por favor, desative o bloqueio de rastreamento para esta página e tente novamente.");
-            return;
-        }
-
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         const margin = 15;
         const textWidth = pageWidth - (margin * 2);
-        
+        let y = 35; 
         const lineHeight = 6;
         const titleHeight = 8;
         const headerHeight = 30; 
-
-        const v = sel => document.querySelector(sel)?.value || "";
-        const getLines = (text) => doc.splitTextToSize(text, textWidth);
 
         const loadImage = (path) => {
             return new Promise((resolve) => {
@@ -299,116 +288,34 @@
             });
         };
 
-        const logoPDF = await loadImage('assets/logo_nova.png');
-        const watermarkImg = await loadImage('icon.png');
-
-        const dataInput = v('#dataPlantao');
-        const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
-
-        // =========================================================
-        // PÁGINA 1: GERAÇÃO DA CAPA GRÁFICA DO PDF
-        // =========================================================
-        doc.setFillColor(30, 30, 30);
-        doc.rect(0, 0, pageWidth, pageHeight, 'F');
-
-        doc.saveGraphicsState();
-        doc.setGState(new doc.GState({opacity: 0.1}));
-        doc.setFillColor(255, 255, 255);
-        doc.triangle(pageWidth, pageHeight, pageWidth - 65, pageHeight, pageWidth, pageHeight - 85, 'F');
-        doc.triangle(pageWidth, pageHeight - 130, pageWidth - 45, pageHeight - 95, pageWidth, pageHeight - 65, 'F');
-        doc.restoreGraphicsState();
-
-        doc.setFillColor(204, 0, 0); 
-        doc.triangle(0, pageHeight * 0.4, 0, pageHeight * 0.45, pageWidth, pageHeight * 0.95, 'F');
-        doc.triangle(0, pageHeight * 0.4, pageWidth, pageHeight * 0.9, pageWidth, pageHeight * 0.95, 'F');
-
-        if (logoPDF) {
-            try {
-                const logoAspectRatio = logoPDF.width / logoPDF.height;
-                const capaLogoW = 55;
-                const capaLogoH = capaLogoW / logoAspectRatio;
-                doc.addImage(logoPDF, 'PNG', 20, 20, capaLogoW, capaLogoH);
-            } catch(e) { console.log("Logo oculta na capa."); }
-        }
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(22);
-        doc.text("ATA POSTO ARAGUAIA - SOBRADINHO", 20, 95);
-        
-        doc.setFont("Helvetica", "normal");
-        doc.setFontSize(14);
-        doc.setTextColor(200, 200, 200);
-        doc.text("PASSAGEM DE SERVIÇO", 20, 107);
-
-        doc.saveGraphicsState();
-        doc.setDrawColor(204, 0, 0);
-        doc.setLineWidth(1);
-        doc.setLineDashPattern([2, 2], 0); 
-        doc.rect(pageWidth - 95, 125, 75, 30, 'D');
-        doc.restoreGraphicsState();
-
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(42);
-        doc.setTextColor(255, 255, 255);
-        doc.text("ATA", pageWidth - 57, 147, { align: "center" });
-
-        doc.setFont("Helvetica", "normal");
-        doc.setFontSize(11);
-        doc.setTextColor(180, 180, 180);
-        const descCapa = "Neste documento estão registrados todos os procedimentos adotados por este plantão, incluindo o recebimento do posto, equipe, checklist de materiais essenciais, controle de intervalos, registro de ocorrências, elogios, reclamações, sugestões/avisos e a passagem final do posto.";
-        const descLines = doc.splitTextToSize(descCapa, pageWidth - 70);
-        let capaY = 185;
-        descLines.forEach(line => {
-            doc.text(line, 20, capaY);
-            capaY += 6;
-        });
-
-        doc.setFont("Helvetica", "bold");
-        doc.setFontSize(11);
-        doc.setTextColor(255, 255, 255);
-        doc.text("Desenvolvido para: Japan Security / Monitoramento", 20, pageHeight - 30);
-        
-        doc.setFont("Helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(160, 160, 160);
-        doc.text(`Data de Emissão: ${dataFormatada}`, 20, pageHeight - 23);
-
-        doc.setTextColor(0, 0, 0);
-
-        // ==========================================
-        // PÁGINA 2 EM DIANTE: CONTEÚDO DA ATA
-        // ==========================================
-        doc.addPage();
-        let y = 35; 
+        const [logoPDF, watermarkImg] = await Promise.all([
+            loadImage('assets/logo_nova.png'),
+            loadImage('icon.png')
+        ]);
 
         const addHeader = (doc) => {
             if (logoPDF) {
-                try {
-                    const logoAspectRatio = logoPDF.width / logoPDF.height;
-                    const newLogoWidth = 45;
-                    const newLogoHeight = newLogoWidth / logoAspectRatio;
-                    doc.addImage(logoPDF, 'PNG', pageWidth - margin - newLogoWidth, 5, newLogoWidth, newLogoHeight);
-                } catch(e) { console.log("Erro no header"); }
+                const logoAspectRatio = logoPDF.width / logoPDF.height;
+                const newLogoWidth = 50;
+                const newLogoHeight = newLogoWidth / logoAspectRatio;
+                doc.addImage(logoPDF, 'PNG', pageWidth - margin - newLogoWidth, 5, newLogoWidth, newLogoHeight);
             }
             doc.setFont("Helvetica", "bold");
             doc.setFontSize(11);
-            doc.text("Ata do ARAGUAIA/SOBRADINHO - Japan Security", margin, 12);
+            doc.text("Ata de Monitoramento Simplificada - Japan Security", margin, 12);
             doc.line(margin, 20, pageWidth - margin, 20); 
         };
 
         const addWatermark = (doc) => {
             if (watermarkImg) {
-                try {
-                    doc.saveGraphicsState();
-                    doc.setGState(new doc.GState({opacity: 0.04}));
-                    const watermarkWidth = 120;
-                    const watermarkHeight = 120;
-                    const watermarkX = (pageWidth / 2) - (watermarkWidth / 2);
-                    const watermarkY = (pageHeight / 2) - (watermarkHeight / 2);
-                    doc.addImage(watermarkImg, 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight);
-                    doc.restoreGraphicsState();
-                } catch(e) { console.log("Erro na marca d'água"); }
+                doc.saveGraphicsState();
+                doc.setGState(new doc.GState({opacity: 0.04}));
+                const watermarkWidth = 120;
+                const watermarkHeight = 120;
+                const watermarkX = (pageWidth / 2) - (watermarkWidth / 2);
+                const watermarkY = (pageHeight / 2) - (watermarkHeight / 2);
+                doc.addImage(watermarkImg, 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+                doc.restoreGraphicsState();
             }
         };
 
@@ -420,6 +327,9 @@
                 addWatermark(doc);
             }
         };
+
+        const v = sel => document.querySelector(sel)?.value || "";
+        const getLines = (text) => doc.splitTextToSize(text, textWidth);
 
         const addSection = (title, content) => {
             const contentFormatted = content.trim() ? content : "Sem alterações registradas.";
@@ -443,24 +353,32 @@
             y += 4;
         };
 
+        // Início da montagem do PDF
         addHeader(doc);
         addWatermark(doc);
 
+        // 1. Recebimento do Posto
         addSection("1. RECEBIMENTO DO POSTO", v('#recebimentoPosto'));
 
+        // 2. Equipe de Plantão
+        const dataInput = v('#dataPlantao');
+        const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
         const equipeInfo = `Data do Plantão: ${dataFormatada}\nHorário: ${v('#horario')}\nQuem Passa o Plantão: ${v('#quemPassa')}\nQuem Recebe o Plantão: ${v('#quemRecebe')}`;
         addSection("2. EQUIPE DE PLANTÃO", equipeInfo);
 
+        // 3. Material do Plantão
         let materiais = "";
-        if(document.getElementById('mat_celular')?.checked) materiais += "• 01 CELULAR MOTO E7 PLUS\n";
-        if(document.getElementById('mat_lanterna')?.checked) materiais += "• 01 LANTERNA\n";
-        if(document.getElementById('mat_carregador')?.checked) materiais += "• 01 CARREGADOR\n";
-        if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 MONITOR\n";
+        if(document.getElementById('mat_celular').checked) materiais += "• 01 CELULAR MOTO E7 PLUS\n";
+        if(document.getElementById('mat_lanterna').checked) materiais += "• 01 LANTERNA\n";
+        if(document.getElementById('mat_carregador').checked) materiais += "• 01 CARREGADOR\n";
+        if(document.getElementById('mat_monitor').checked) materiais += "• 01 MONITOR\n";
         addSection("3. MATERIAL DO PLANTÃO", materiais || "Nenhum material selecionado.");
 
+        // 4. Horário de Intervalo
         const intervalo = `Hora Entrada: ${v('#intervaloEntrada') || 'N/A'} | Hora Saída: ${v('#intervaloSaida') || 'N/A'}\n(Monitoramento realizado pela Central de Monitoramento)`;
         addSection("4. HORÁRIO DE INTERVALO", intervalo);
 
+        // 5. Ocorrências do Plantão
         let ocText = "";
         document.querySelectorAll('#ocorrencias .registro-item').forEach(item => {
             const d = item.querySelector('.oc-data').value;
@@ -471,6 +389,7 @@
         });
         addSection("5. OCORRÊNCIAS DO PLANTÃO", ocText);
 
+        // 6. Elogios
         let elText = "";
         document.querySelectorAll('#elogios .registro-item').forEach(item => {
             const d = item.querySelector('.el-data').value;
@@ -481,6 +400,7 @@
         });
         addSection("6. ELOGIOS", elText);
 
+        // 7. Reclamações
         let recText = "";
         document.querySelectorAll('#reclamacoes .registro-item').forEach(item => {
             const d = item.querySelector('.rec-data').value;
@@ -491,6 +411,7 @@
         });
         addSection("7. RECLAMAÇÕES", recText);
 
+        // 8. Sugestões ou Avisos
         let sugText = "";
         document.querySelectorAll('#sugestoes .registro-item').forEach(item => {
             const d = item.querySelector('.sug-data').value;
@@ -500,8 +421,10 @@
         });
         addSection("8. SUGESTÕES OU AVISOS DO PLANTÃO", sugText);
 
+        // Fechamento e Rodapé
         addSection("FECHAMENTO DO PLANTÃO", v('#passagemPosto'));
 
+        // Linha final com a data e local fixo no encerramento
         checkNewPage(15);
         y += 8;
         doc.setFont("Helvetica", "italic");
