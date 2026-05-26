@@ -11,16 +11,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e1e1e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        .form-page { display: none; }
+        .form-page.active { display: block !important; }
+    </style>
 </head>
 <body>
 
-<div class="capa" id="capa">
+<div class="capa" id="capa" style="display: block;">
     <div class="info-capa">
         <h1 class="titulo-capa">ATA POSTO ARAGUAIA - SOBRADINHO</h1>
         <h2 class="subtitulo-capa">PASSAGEM DE SERVIÇO</h2>
@@ -29,15 +34,15 @@
         <p class="data-capa">Data: 26 de maio de 2026</p>
     </div>
     <div class="center">
-        <button class="btn primary" onclick="iniciarAta()">Iniciar Ata</button>
+        <button class="btn primary" type="button" onclick="iniciarAta()">Iniciar Ata</button>
     </div>
 </div>
 
 <div class="ata-content" id="conteudo" style="display: none;">
-    <h1>Gerador de Ata Simplificado</h1>
+    <h1 style="color: #ffffff; text-align: center; margin-top: 20px;">Gerador de Ata Simplificado</h1>
     <form id="ataForm">
         
-        <div class="form-page active" id="page-1">
+        <div class="form-page" id="page-1">
             <section class="card">
                 <h2>1. Recebimento do Posto</h2>
                 <div class="input-group">
@@ -177,7 +182,7 @@
             <div class="form-nav">
                 <button type="button" class="btn secondary" onclick="prevPage()">Anterior</button>
             </div>
-            <div class="center final-buttons">
+            <div class="center final-buttons" style="margin-top: 20px; text-align: center;">
                 <button type="button" class="btn primary" onclick="gerarPdfFormal()">Gerar PDF Formal</button>
             </div>
         </div>
@@ -214,13 +219,17 @@
     }
 
     function iniciarAta() {
+        // Altera a visibilidade principal de forma explícita prevenindo falhas de carregamento
         document.getElementById('capa').style.display = 'none';
         document.getElementById('conteudo').style.display = 'block';
         
-        // Define data atual no formato ideal
         const hoje = "2026-05-26";
-        document.getElementById('dataPlantao').value = hoje;
+        const inputData = document.getElementById('dataPlantao');
+        if (inputData) {
+            inputData.value = hoje;
+        }
         
+        currentPage = 1;
         showPage(1);
     }
 
@@ -268,6 +277,12 @@
     }
 
     async function gerarPdfFormal() {
+        // Impede que o script quebre se o navegador bloquear o jsPDF totalmente
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            alert("A biblioteca de geração de PDF foi retida pelo navegador. Por favor, ajuste o nível de proteção contra rastreamento ou desative extensões de bloqueio nesta aba.");
+            return;
+        }
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('p', 'mm', 'a4');
         const pageWidth = doc.internal.pageSize.getWidth();
@@ -353,32 +368,26 @@
             y += 4;
         };
 
-        // Início da montagem do PDF
         addHeader(doc);
         addWatermark(doc);
 
-        // 1. Recebimento do Posto
         addSection("1. RECEBIMENTO DO POSTO", v('#recebimentoPosto'));
 
-        // 2. Equipe de Plantão
         const dataInput = v('#dataPlantao');
         const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
         const equipeInfo = `Data do Plantão: ${dataFormatada}\nHorário: ${v('#horario')}\nQuem Passa o Plantão: ${v('#quemPassa')}\nQuem Recebe o Plantão: ${v('#quemRecebe')}`;
         addSection("2. EQUIPE DE PLANTÃO", equipeInfo);
 
-        // 3. Material do Plantão
         let materiais = "";
-        if(document.getElementById('mat_celular').checked) materiais += "• 01 CELULAR MOTO E7 PLUS\n";
-        if(document.getElementById('mat_lanterna').checked) materiais += "• 01 LANTERNA\n";
-        if(document.getElementById('mat_carregador').checked) materiais += "• 01 CARREGADOR\n";
-        if(document.getElementById('mat_monitor').checked) materiais += "• 01 MONITOR\n";
+        if(document.getElementById('mat_celular')?.checked) materiais += "• 01 CELULAR MOTO E7 PLUS\n";
+        if(document.getElementById('mat_lanterna')?.checked) materiais += "• 01 LANTERNA\n";
+        if(document.getElementById('mat_carregador')?.checked) materiais += "• 01 CARREGADOR\n";
+        if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 MONITOR\n";
         addSection("3. MATERIAL DO PLANTÃO", materiais || "Nenhum material selecionado.");
 
-        // 4. Horário de Intervalo
         const intervalo = `Hora Entrada: ${v('#intervaloEntrada') || 'N/A'} | Hora Saída: ${v('#intervaloSaida') || 'N/A'}\n(Monitoramento realizado pela Central de Monitoramento)`;
         addSection("4. HORÁRIO DE INTERVALO", intervalo);
 
-        // 5. Ocorrências do Plantão
         let ocText = "";
         document.querySelectorAll('#ocorrencias .registro-item').forEach(item => {
             const d = item.querySelector('.oc-data').value;
@@ -389,7 +398,6 @@
         });
         addSection("5. OCORRÊNCIAS DO PLANTÃO", ocText);
 
-        // 6. Elogios
         let elText = "";
         document.querySelectorAll('#elogios .registro-item').forEach(item => {
             const d = item.querySelector('.el-data').value;
@@ -400,7 +408,6 @@
         });
         addSection("6. ELOGIOS", elText);
 
-        // 7. Reclamações
         let recText = "";
         document.querySelectorAll('#reclamacoes .registro-item').forEach(item => {
             const d = item.querySelector('.rec-data').value;
@@ -411,7 +418,6 @@
         });
         addSection("7. RECLAMAÇÕES", recText);
 
-        // 8. Sugestões ou Avisos
         let sugText = "";
         document.querySelectorAll('#sugestoes .registro-item').forEach(item => {
             const d = item.querySelector('.sug-data').value;
@@ -421,10 +427,8 @@
         });
         addSection("8. SUGESTÕES OU AVISOS DO PLANTÃO", sugText);
 
-        // Fechamento e Rodapé
         addSection("FECHAMENTO DO PLANTÃO", v('#passagemPosto'));
 
-        // Linha final com a data e local fixo no encerramento
         checkNewPage(15);
         y += 8;
         doc.setFont("Helvetica", "italic");
