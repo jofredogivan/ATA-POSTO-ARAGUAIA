@@ -20,16 +20,16 @@
 </head>
 <body>
 
-<div class="capa" id="capa">
+<div class="capa" id="capa" style="display: block;">
     <div class="info-capa">
         <h1 class="titulo-capa">ATA POSTO ARAGUAIA - SOBRADINHO</h1>
         <h2 class="subtitulo-capa">PASSAGEM DE SERVIÇO</h2>
         <p class="texto-capa">Neste documento estão registrados todos os procedimentos adotados por este plantão, incluindo o recebimento do posto, equipe, checklist de materiais essenciais, controle de intervalos, registro de ocorrências, elogios, reclamações, sugestões/avisos e a passagem final do posto.</p>
-        <p class="data-capa">Desenvolvido para: **Japan Security / Monitoramento**</p>
-        <p class="data-capa">Data: 26 de maio de 2026</p>
+        <p class="data-capa">Desenvolvido para: <strong>Japan Security / Monitoramento</strong></p>
+        <p class="data-capa">Data de Emissão: 26 de maio de 2026</p>
     </div>
-    <div class="center">
-        <button class="btn primary" onclick="iniciarAta()">Iniciar Ata</button>
+    <div class="center" style="margin-top: 30px; text-align: center;">
+        <button class="btn primary" type="button" onclick="iniciarAta()">Iniciar Ata</button>
     </div>
 </div>
 
@@ -37,7 +37,7 @@
     <h1>Gerador de Ata Simplificado</h1>
     <form id="ataForm">
         
-        <div class="form-page active" id="page-1">
+        <div class="form-page" id="page-1" style="display: none;">
             <section class="card">
                 <h2>1. Recebimento do Posto</h2>
                 <div class="input-group">
@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-2">
+        <div class="form-page" id="page-2" style="display: none;">
             <section class="card">
                 <h2>3. Material do Plantão</h2>
                 <ul id="checklist" class="checklist-list">
@@ -100,7 +100,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-3">
+        <div class="form-page" id="page-3" style="display: none;">
             <section class="card">
                 <h2>5. Ocorrências do Plantão</h2>
                 <div id="ocorrencias">
@@ -131,7 +131,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-4">
+        <div class="form-page" id="page-4" style="display: none;">
             <section class="card">
                 <h2>7. Reclamações</h2>
                 <div id="reclamacoes">
@@ -161,7 +161,7 @@
             </div>
         </div>
 
-        <div class="form-page" id="page-5">
+        <div class="form-page" id="page-5" style="display: none;">
             <section class="card">
                 <h2>Passagem do Posto (Fechamento)</h2>
                 <div class="input-group">
@@ -177,7 +177,7 @@
             <div class="form-nav">
                 <button type="button" class="btn secondary" onclick="prevPage()">Anterior</button>
             </div>
-            <div class="center final-buttons">
+            <div class="center final-buttons" style="margin-top: 20px; text-align: center;">
                 <button type="button" class="btn primary" onclick="gerarPdfFormal()">Gerar PDF Formal</button>
             </div>
         </div>
@@ -190,11 +190,11 @@
 
     function showPage(pageNumber) {
         document.querySelectorAll('.form-page').forEach(page => {
-            page.classList.remove('active');
+            page.style.display = 'none';
         });
         const pageElement = document.getElementById(`page-${pageNumber}`);
         if (pageElement) {
-            pageElement.classList.add('active');
+            pageElement.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     }
@@ -217,10 +217,10 @@
         document.getElementById('capa').style.display = 'none';
         document.getElementById('conteudo').style.display = 'block';
         
-        // Define data atual no formato ideal
         const hoje = "2026-05-26";
         document.getElementById('dataPlantao').value = hoje;
         
+        currentPage = 1;
         showPage(1);
     }
 
@@ -274,10 +274,13 @@
         const pageHeight = doc.internal.pageSize.getHeight();
         const margin = 15;
         const textWidth = pageWidth - (margin * 2);
-        let y = 35; 
+        
         const lineHeight = 6;
         const titleHeight = 8;
         const headerHeight = 30; 
+
+        const v = sel => document.querySelector(sel)?.value || "";
+        const getLines = (text) => doc.splitTextToSize(text, textWidth);
 
         const loadImage = (path) => {
             return new Promise((resolve) => {
@@ -288,34 +291,125 @@
             });
         };
 
-        const [logoPDF, watermarkImg] = await Promise.all([
-            loadImage('assets/logo_nova.png'),
-            loadImage('icon.png')
-        ]);
+        const logoPDF = await loadImage('assets/logo_nova.png');
+        const watermarkImg = await loadImage('icon.png');
+
+        // =========================================================
+        // PÁGINA 1: GERAÇÃO DA CAPA GRÁFICA DO PDF (IGUAL À IMAGEM)
+        // =========================================================
+        
+        // 1. Fundo escuro (Cinza Grafite / Dark corporativo)
+        doc.setFillColor(30, 30, 30);
+        doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+        // 2. Grafismos triangulares translúcidos no fundo
+        doc.saveGraphicsState();
+        doc.setGState(new doc.GState({opacity: 0.1}));
+        doc.setFillColor(255, 255, 255);
+        doc.triangle(pageWidth, pageHeight, pageWidth - 65, pageHeight, pageWidth, pageHeight - 85, 'F');
+        doc.triangle(pageWidth, pageHeight - 130, pageWidth - 45, pageHeight - 95, pageWidth, pageHeight - 65, 'F');
+        doc.restoreGraphicsState();
+
+        // 3. Faixa Diagonal Vermelha Viva
+        doc.setFillColor(204, 0, 0); 
+        doc.triangle(0, pageHeight * 0.4, 0, pageHeight * 0.45, pageWidth, pageHeight * 0.95, 'F');
+        doc.triangle(0, pageHeight * 0.4, pageWidth, pageHeight * 0.9, pageWidth, pageHeight * 0.95, 'F');
+
+        // 4. Logotipo inserido no canto superior esquerdo da capa do PDF
+        if (logoPDF) {
+            try {
+                const logoAspectRatio = logoPDF.width / logoPDF.height;
+                const capaLogoW = 55;
+                const capaLogoH = capaLogoW / logoAspectRatio;
+                doc.addImage(logoPDF, 'PNG', 20, 20, capaLogoW, capaLogoH);
+            } catch(e) { console.log("Logo oculta na capa do PDF."); }
+        }
+
+        // 5. Bloco de Textos da Capa
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(22);
+        doc.text("ATA POSTO ARAGUAIA - SOBRADINHO", 20, 95);
+        
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(14);
+        doc.setTextColor(200, 200, 200);
+        doc.text("PASSAGEM DE SERVIÇO", 20, 107);
+
+        // 6. Moldura Vermelha Tracejada com Texto Centralizado "ATA"
+        doc.saveGraphicsState();
+        doc.setDrawColor(204, 0, 0);
+        doc.setLineWidth(1);
+        doc.setLineDashPattern([2, 2], 0); 
+        doc.rect(pageWidth - 95, 125, 75, 30, 'D');
+        doc.restoreGraphicsState();
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(42);
+        doc.setTextColor(255, 255, 255);
+        doc.text("ATA", pageWidth - 57, 147, { align: "center" });
+
+        // 7. Descrição da Ata na Capa
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(180, 180, 180);
+        const descCapa = "Neste documento estão registrados todos os procedimentos adotados por este plantão, incluindo o recebimento do posto, equipe, checklist de materiais essenciais, controle de intervalos, registro de ocorrências, elogios, reclamações, sugestões/avisos e a passagem final do posto.";
+        const descLines = doc.splitTextToSize(descCapa, pageWidth - 70);
+        let capaY = 185;
+        descLines.forEach(line => {
+            doc.text(line, 20, capaY);
+            capaY += 6;
+        });
+
+        // 8. Rodapé Corporativo da Capa
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(255, 255, 255);
+        doc.text("Desenvolvido para: Japan Security / Monitoramento", 20, pageHeight - 30);
+        
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(160, 160, 160);
+        const dataInput = v('#dataPlantao');
+        const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
+        doc.text(`Data de Emissão: ${dataFormatada}`, 20, pageHeight - 23);
+
+        // Restaura as cores de texto normais para o relatório
+        doc.setTextColor(0, 0, 0);
+
+        // ==========================================
+        // PÁGINA 2 EM DIANTE: CONTEÚDO DA ATA
+        // ==========================================
+        doc.addPage();
+        let y = 35; 
 
         const addHeader = (doc) => {
             if (logoPDF) {
-                const logoAspectRatio = logoPDF.width / logoPDF.height;
-                const newLogoWidth = 50;
-                const newLogoHeight = newLogoWidth / logoAspectRatio;
-                doc.addImage(logoPDF, 'PNG', pageWidth - margin - newLogoWidth, 5, newLogoWidth, newLogoHeight);
+                try {
+                    const logoAspectRatio = logoPDF.width / logoPDF.height;
+                    const newLogoWidth = 45;
+                    const newLogoHeight = newLogoWidth / logoAspectRatio;
+                    doc.addImage(logoPDF, 'PNG', pageWidth - margin - newLogoWidth, 5, newLogoWidth, newLogoHeight);
+                } catch(e) { console.log("Erro no header"); }
             }
             doc.setFont("Helvetica", "bold");
             doc.setFontSize(11);
-            doc.text("Ata de Monitoramento Simplificada - Japan Security", margin, 12);
+            doc.text("Ata do ARAGUAIA/SOBRADINHO - Japan Security", margin, 12);
             doc.line(margin, 20, pageWidth - margin, 20); 
         };
 
         const addWatermark = (doc) => {
             if (watermarkImg) {
-                doc.saveGraphicsState();
-                doc.setGState(new doc.GState({opacity: 0.04}));
-                const watermarkWidth = 120;
-                const watermarkHeight = 120;
-                const watermarkX = (pageWidth / 2) - (watermarkWidth / 2);
-                const watermarkY = (pageHeight / 2) - (watermarkHeight / 2);
-                doc.addImage(watermarkImg, 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight);
-                doc.restoreGraphicsState();
+                try {
+                    doc.saveGraphicsState();
+                    doc.setGState(new doc.GState({opacity: 0.04}));
+                    const watermarkWidth = 120;
+                    const watermarkHeight = 120;
+                    const watermarkX = (pageWidth / 2) - (watermarkWidth / 2);
+                    const watermarkY = (pageHeight / 2) - (watermarkHeight / 2);
+                    doc.addImage(watermarkImg, 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+                    doc.restoreGraphicsState();
+                } catch(e) { console.log("Erro na marca d'água"); }
             }
         };
 
@@ -327,9 +421,6 @@
                 addWatermark(doc);
             }
         };
-
-        const v = sel => document.querySelector(sel)?.value || "";
-        const getLines = (text) => doc.splitTextToSize(text, textWidth);
 
         const addSection = (title, content) => {
             const contentFormatted = content.trim() ? content : "Sem alterações registradas.";
@@ -353,7 +444,7 @@
             y += 4;
         };
 
-        // Início da montagem do PDF
+        // Inicia cabeçalho e marca d'água nas páginas de conteúdo
         addHeader(doc);
         addWatermark(doc);
 
@@ -361,8 +452,6 @@
         addSection("1. RECEBIMENTO DO POSTO", v('#recebimentoPosto'));
 
         // 2. Equipe de Plantão
-        const dataInput = v('#dataPlantao');
-        const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
         const equipeInfo = `Data do Plantão: ${dataFormatada}\nHorário: ${v('#horario')}\nQuem Passa o Plantão: ${v('#quemPassa')}\nQuem Recebe o Plantão: ${v('#quemRecebe')}`;
         addSection("2. EQUIPE DE PLANTÃO", equipeInfo);
 
@@ -424,7 +513,6 @@
         // Fechamento e Rodapé
         addSection("FECHAMENTO DO PLANTÃO", v('#passagemPosto'));
 
-        // Linha final com a data e local fixo no encerramento
         checkNewPage(15);
         y += 8;
         doc.setFont("Helvetica", "italic");
