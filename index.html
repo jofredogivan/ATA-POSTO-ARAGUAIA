@@ -370,6 +370,8 @@
         doc.setFont("Helvetica", "normal");
         doc.setFontSize(10);
         doc.setTextColor(160, 160, 160);
+        
+        // CORREÇÃO AQUI: Captura das variáveis movidas para dentro do escopo da execução do PDF
         const dataInput = v('#dataPlantao');
         const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
         doc.text(`Data de Emissão: ${dataFormatada}`, 20, pageHeight - 23);
