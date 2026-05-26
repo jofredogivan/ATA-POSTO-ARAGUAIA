@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATA POSTO ARAGUAIA - SOBRADINHO</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e1e1e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+
+<div class="capa" id="capa">
+    <div class="info-capa">
+        <h1 class="titulo-capa">ATA POSTO ARAGUAIA - SOBRADINHO</h1>
+        <h2 class="subtitulo-capa">PASSAGEM DE SERVIÇO</h2>
+        <p class="texto-capa">Neste documento estão registrados todos os procedimentos adotados por este plantão, incluindo o recebimento do posto, equipe, checklist de materiais essenciais, controle de intervalos, registro de ocorrências, elogios, reclamações, sugestões/avisos e a passagem final do posto.</p>
+        <p class="data-capa">Desenvolvido para: **Japan Security / Monitoramento**</p>
+        <p class="data-capa">Data: 26 de maio de 2026</p>
+    </div>
+    <div class="center">
+        <button class="btn primary" onclick="iniciarAta()">Iniciar Ata</button>
+    </div>
+</div>
+
+<div class="ata-content" id="conteudo" style="display: none;">
+    <h1>Gerador de Ata Simplificado</h1>
+    <form id="ataForm">
+        
+        <div class="form-page active" id="page-1">
+            <section class="card">
+                <h2>1. Recebimento do Posto</h2>
+                <div class="input-group">
+                    <label for="recebimentoPosto">Declaração de Recebimento</label>
+                    <textarea id="recebimentoPosto" class="input-field" rows="2">Recebi o posto e as chaves da Sra. Nandara, com todas as ordens e normas em vigor.</textarea>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>2. Equipe de Plantão</h2>
+                <div class="input-group">
+                    <label for="dataPlantao">Data do Plantão</label>
+                    <input id="dataPlantao" type="date" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label for="horario">Horário do Plantão</label>
+                    <select id="horario" class="input-field">
+                        <option>07:00 às 19:00</option>
+                        <option>19:00 às 07:00</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="quemPassa">Quem Passa o Plantão</label>
+                    <input id="quemPassa" type="text" placeholder="Nome de quem passa" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label for="quemRecebe">Quem Recebe o Plantão</label>
+                    <input id="quemRecebe" type="text" placeholder="Nome de quem recebe" class="input-field">
+                </div>
+            </section>
+            
+            <div class="form-nav">
+                <button type="button" class="btn primary" onclick="nextPage()">Próximo</button>
+            </div>
+        </div>
+
+        <div class="form-page" id="page-2">
+            <section class="card">
+                <h2>3. Material do Plantão</h2>
+                <ul id="checklist" class="checklist-list">
+                    <li><label><input type="checkbox" id="mat_celular" checked> 01 CELULAR MOTO E7 PLUS</label></li>
+                    <li><label><input type="checkbox" id="mat_lanterna" checked> 01 LANTERNA</label></li>
+                    <li><label><input type="checkbox" id="mat_carregador" checked> 01 CARREGADOR</label></li>
+                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 MONITOR</label></li>
+                </ul>
+            </section>
+
+            <section class="card">
+                <h2>4. Horário de Intervalo</h2>
+                <p style="font-size: 0.9em; color: #666; margin-bottom: 10px; font-style: italic;">(Monitoramento realizado pela Central de Monitoramento)</p>
+                <div class="grid-2-cols">
+                    <div class="input-group"><label>Hora Entrada</label><input id="intervaloEntrada" type="time" class="input-field"></div>
+                    <div class="input-group"><label>Hora Saída</label><input id="intervaloSaida" type="time" class="input-field"></div>
+                </div>
+            </section>
+            
+            <div class="form-nav">
+                <button type="button" class="btn secondary" onclick="prevPage()">Anterior</button>
+                <button type="button" class="btn primary" onclick="nextPage()">Próximo</button>
+            </div>
+        </div>
+
+        <div class="form-page" id="page-3">
+            <section class="card">
+                <h2>5. Ocorrências do Plantão</h2>
+                <div id="ocorrencias">
+                    <div class="registro-item grid-3">
+                        <input type="date" class="oc-data input-field">
+                        <input type="time" class="oc-hora input-field">
+                        <textarea class="oc-desc input-field" placeholder="Descrição dos fatos..."></textarea>
+                    </div>
+                </div>
+                <button type="button" class="btn secondary" onclick="adicionarOcorrencia()">+ Adicionar Ocorrência</button>
+            </section>
+
+            <section class="card">
+                <h2>6. Elogios</h2>
+                <div id="elogios">
+                    <div class="registro-item grid-3">
+                        <input type="date" class="el-data input-field">
+                        <input type="text" class="el-cliente input-field" placeholder="Cliente">
+                        <textarea class="el-desc input-field" placeholder="Descrição do elogio..."></textarea>
+                    </div>
+                </div>
+                <button type="button" class="btn secondary" onclick="adicionarElogio()">+ Adicionar Elogio</button>
+            </section>
+            
+            <div class="form-nav">
+                <button type="button" class="btn secondary" onclick="prevPage()">Anterior</button>
+                <button type="button" class="btn primary" onclick="nextPage()">Próximo</button>
+            </div>
+        </div>
+
+        <div class="form-page" id="page-4">
+            <section class="card">
+                <h2>7. Reclamações</h2>
+                <div id="reclamacoes">
+                    <div class="registro-item grid-3">
+                        <input type="date" class="rec-data input-field">
+                        <input type="text" class="rec-cliente input-field" placeholder="Cliente">
+                        <textarea class="rec-desc input-field" placeholder="Descrição da reclamação..."></textarea>
+                    </div>
+                </div>
+                <button type="button" class="btn secondary" onclick="adicionarReclamacao()">+ Adicionar Reclamação</button>
+            </section>
+
+            <section class="card">
+                <h2>8. Sugestões ou Avisos do Plantão</h2>
+                <div id="sugestoes">
+                    <div class="registro-item grid-2">
+                        <input type="date" class="sug-data input-field">
+                        <textarea class="sug-desc input-field" placeholder="Sugestões e avisos..."></textarea>
+                    </div>
+                </div>
+                <button type="button" class="btn secondary" onclick="adicionarSugestao()">+ Adicionar Sugestão/Aviso</button>
+            </section>
+            
+            <div class="form-nav">
+                <button type="button" class="btn secondary" onclick="prevPage()">Anterior</button>
+                <button type="button" class="btn primary" onclick="nextPage()">Próximo</button>
+            </div>
+        </div>
+
+        <div class="form-page" id="page-5">
+            <section class="card">
+                <h2>Passagem do Posto (Fechamento)</h2>
+                <div class="input-group">
+                    <label for="passagemPosto">Declaração de Saída</label>
+                    <textarea id="passagemPosto" class="input-field" rows="2">Passo o posto e as chaves para o Sr. Eber, com todas as ordens e normas em vigor.</textarea>
+                </div>
+                <div class="input-group">
+                    <label for="rodapeData">Rodapé / Localização</label>
+                    <input id="rodapeData" type="text" class="input-field" value="Brasília - DF, 26 de maio de 2026">
+                </div>
+            </section>
+            
+            <div class="form-nav">
+                <button type="button" class="btn secondary" onclick="prevPage()">Anterior</button>
+            </div>
+            <div class="center final-buttons">
+                <button type="button" class="btn primary" onclick="gerarPdfFormal()">Gerar PDF Formal</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentPage = 1;
+    const totalPages = 5;
+
+    function showPage(pageNumber) {
+        document.querySelectorAll('.form-page').forEach(page => {
+            page.classList.remove('active');
+        });
+        const pageElement = document.getElementById(`page-${pageNumber}`);
+        if (pageElement) {
+            pageElement.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    }
+
+    function iniciarAta() {
+        document.getElementById('capa').style.display = 'none';
+        document.getElementById('conteudo').style.display = 'block';
+        
+        // Define data atual no formato ideal
+        const hoje = "2026-05-26";
+        document.getElementById('dataPlantao').value = hoje;
+        
+        showPage(1);
+    }
+
+    function adicionarOcorrencia() {
+        const div = document.createElement('div');
+        div.className = 'registro-item grid-3';
+        div.innerHTML = `
+            <input type="date" class="oc-data input-field" value="2026-05-26">
+            <input type="time" class="oc-hora input-field">
+            <textarea class="oc-desc input-field" placeholder="Descrição dos fatos..."></textarea>
+        `;
+        document.getElementById('ocorrencias').appendChild(div);
+    }
+
+    function adicionarElogio() {
+        const div = document.createElement('div');
+        div.className = 'registro-item grid-3';
+        div.innerHTML = `
+            <input type="date" class="el-data input-field" value="2026-05-26">
+            <input type="text" class="el-cliente input-field" placeholder="Cliente">
+            <textarea class="el-desc input-field" placeholder="Descrição do elogio..."></textarea>
+        `;
+        document.getElementById('elogios').appendChild(div);
+    }
+
+    function adicionarReclamacao() {
+        const div = document.createElement('div');
+        div.className = 'registro-item grid-3';
+        div.innerHTML = `
+            <input type="date" class="rec-data input-field" value="2026-05-26">
+            <input type="text" class="rec-cliente input-field" placeholder="Cliente">
+            <textarea class="rec-desc input-field" placeholder="Descrição da reclamação..."></textarea>
+        `;
+        document.getElementById('reclamacoes').appendChild(div);
+    }
+
+    function adicionarSugestao() {
+        const div = document.createElement('div');
+        div.className = 'registro-item grid-2';
+        div.innerHTML = `
+            <input type="date" class="sug-data input-field" value="2026-05-26">
+            <textarea class="sug-desc input-field" placeholder="Sugestões e avisos..."></textarea>
+        `;
+        document.getElementById('sugestoes').appendChild(div);
+    }
+
+    async function gerarPdfFormal() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 15;
+        const textWidth = pageWidth - (margin * 2);
+        let y = 35; 
+        const lineHeight = 6;
+        const titleHeight = 8;
+        const headerHeight = 30; 
+
+        const loadImage = (path) => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = path;
+            });
+        };
+
+        const [logoPDF, watermarkImg] = await Promise.all([
+            loadImage('assets/logo_nova.png'),
+            loadImage('icon.png')
+        ]);
+
+        const addHeader = (doc) => {
+            if (logoPDF) {
+                const logoAspectRatio = logoPDF.width / logoPDF.height;
+                const newLogoWidth = 50;
+                const newLogoHeight = newLogoWidth / logoAspectRatio;
+                doc.addImage(logoPDF, 'PNG', pageWidth - margin - newLogoWidth, 5, newLogoWidth, newLogoHeight);
+            }
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(11);
+            doc.text("Ata de Monitoramento Simplificada - Japan Security", margin, 12);
+            doc.line(margin, 20, pageWidth - margin, 20); 
+        };
+
+        const addWatermark = (doc) => {
+            if (watermarkImg) {
+                doc.saveGraphicsState();
+                doc.setGState(new doc.GState({opacity: 0.04}));
+                const watermarkWidth = 120;
+                const watermarkHeight = 120;
+                const watermarkX = (pageWidth / 2) - (watermarkWidth / 2);
+                const watermarkY = (pageHeight / 2) - (watermarkHeight / 2);
+                doc.addImage(watermarkImg, 'PNG', watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+                doc.restoreGraphicsState();
+            }
+        };
+
+        const checkNewPage = (requiredHeight) => {
+            if (y + requiredHeight > pageHeight - 25) {
+                doc.addPage();
+                y = headerHeight; 
+                addHeader(doc);
+                addWatermark(doc);
+            }
+        };
+
+        const v = sel => document.querySelector(sel)?.value || "";
+        const getLines = (text) => doc.splitTextToSize(text, textWidth);
+
+        const addSection = (title, content) => {
+            const contentFormatted = content.trim() ? content : "Sem alterações registradas.";
+            const lines = getLines(contentFormatted);
+            const requiredHeight = titleHeight + (lines.length * lineHeight) + 6;
+
+            checkNewPage(requiredHeight);
+
+            doc.setFont("Helvetica", "bold");
+            doc.setFontSize(12);
+            doc.text(title, margin, y);
+            y += titleHeight - 2;
+            
+            doc.setFont("Helvetica", "normal");
+            doc.setFontSize(10);
+            
+            lines.forEach(line => {
+                doc.text(line, margin, y);
+                y += lineHeight;
+            });
+            y += 4;
+        };
+
+        // Início da montagem do PDF
+        addHeader(doc);
+        addWatermark(doc);
+
+        // 1. Recebimento do Posto
+        addSection("1. RECEBIMENTO DO POSTO", v('#recebimentoPosto'));
+
+        // 2. Equipe de Plantão
+        const dataInput = v('#dataPlantao');
+        const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
+        const equipeInfo = `Data do Plantão: ${dataFormatada}\nHorário: ${v('#horario')}\nQuem Passa o Plantão: ${v('#quemPassa')}\nQuem Recebe o Plantão: ${v('#quemRecebe')}`;
+        addSection("2. EQUIPE DE PLANTÃO", equipeInfo);
+
+        // 3. Material do Plantão
+        let materiais = "";
+        if(document.getElementById('mat_celular').checked) materiais += "• 01 CELULAR MOTO E7 PLUS\n";
+        if(document.getElementById('mat_lanterna').checked) materiais += "• 01 LANTERNA\n";
+        if(document.getElementById('mat_carregador').checked) materiais += "• 01 CARREGADOR\n";
+        if(document.getElementById('mat_monitor').checked) materiais += "• 01 MONITOR\n";
+        addSection("3. MATERIAL DO PLANTÃO", materiais || "Nenhum material selecionado.");
+
+        // 4. Horário de Intervalo
+        const intervalo = `Hora Entrada: ${v('#intervaloEntrada') || 'N/A'} | Hora Saída: ${v('#intervaloSaida') || 'N/A'}\n(Monitoramento realizado pela Central de Monitoramento)`;
+        addSection("4. HORÁRIO DE INTERVALO", intervalo);
+
+        // 5. Ocorrências do Plantão
+        let ocText = "";
+        document.querySelectorAll('#ocorrencias .registro-item').forEach(item => {
+            const d = item.querySelector('.oc-data').value;
+            const df = d ? d.split('-').reverse().join('/') : '';
+            const h = item.querySelector('.oc-hora').value;
+            const desc = item.querySelector('.oc-desc').value;
+            if (desc) ocText += `• [Data: ${df} | Hora: ${h}] - ${desc}\n`;
+        });
+        addSection("5. OCORRÊNCIAS DO PLANTÃO", ocText);
+
+        // 6. Elogios
+        let elText = "";
+        document.querySelectorAll('#elogios .registro-item').forEach(item => {
+            const d = item.querySelector('.el-data').value;
+            const df = d ? d.split('-').reverse().join('/') : '';
+            const c = item.querySelector('.el-cliente').value;
+            const desc = item.querySelector('.el-desc').value;
+            if (desc) elText += `• [Data: ${df} | Cliente: ${c}] - ${desc}\n`;
+        });
+        addSection("6. ELOGIOS", elText);
+
+        // 7. Reclamações
+        let recText = "";
+        document.querySelectorAll('#reclamacoes .registro-item').forEach(item => {
+            const d = item.querySelector('.rec-data').value;
+            const df = d ? d.split('-').reverse().join('/') : '';
+            const c = item.querySelector('.rec-cliente').value;
+            const desc = item.querySelector('.rec-desc').value;
+            if (desc) recText += `• [Data: ${df} | Cliente: ${c}] - ${desc}\n`;
+        });
+        addSection("7. RECLAMAÇÕES", recText);
+
+        // 8. Sugestões ou Avisos
+        let sugText = "";
+        document.querySelectorAll('#sugestoes .registro-item').forEach(item => {
+            const d = item.querySelector('.sug-data').value;
+            const df = d ? d.split('-').reverse().join('/') : '';
+            const desc = item.querySelector('.sug-desc').value;
+            if (desc) sugText += `• [Data: ${df}] - ${desc}\n`;
+        });
+        addSection("8. SUGESTÕES OU AVISOS DO PLANTÃO", sugText);
+
+        // Fechamento e Rodapé
+        addSection("FECHAMENTO DO PLANTÃO", v('#passagemPosto'));
+
+        // Linha final com a data e local fixo no encerramento
+        checkNewPage(15);
+        y += 8;
+        doc.setFont("Helvetica", "italic");
+        doc.setFontSize(10);
+        doc.text(v('#rodapeData'), pageWidth / 2, y, { align: "center" });
+
+        doc.save(`ata_posto_araguaia_26_05_2026.pdf`);
+    }
+</script>
+
+</body>
+</html>

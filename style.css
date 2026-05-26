@@ -1,0 +1,267 @@
+/* Importação de fontes */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@400;500&display=swap');
+
+/* Variáveis de cores */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-dark: #1e1e1e;
+    --card-background: #2a2a2a;
+    --text-color: #f0f0f0;
+    --border-color: #444;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo global e body */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Nova classe para o conteúdo da ata, com a formatação original */
+.ata-content {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Estilização da capa */
+.capa {
+    background-image: url('assets/image_a77742.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.info-capa {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.titulo-capa {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2em;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+}
+
+.subtitulo-capa {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #b0b0b0;
+}
+
+.texto-capa {
+    font-size: 0.9em;
+    line-height: 1.4;
+    max-width: 600px;
+    margin: 0 auto 15px auto;
+}
+
+.data-capa {
+    font-size: 0.8em;
+    color: #999;
+    margin: 0;
+}
+
+/* Estilização do formulário */
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 25px;
+}
+
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1.2em;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.form-page {
+    display: none;
+    transition: opacity 0.5s ease;
+    opacity: 0;
+    padding-bottom: 40px;
+}
+
+.form-page.active {
+    display: block;
+    opacity: 1;
+}
+
+.card {
+    background-color: var(--card-background);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px var(--shadow-dark);
+    border: 1px solid var(--border-color);
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.input-field,
+textarea.input-field,
+select.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    background-color: #333;
+    color: var(--text-color);
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+textarea.input-field {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: transform 0.2s, background-color 0.2s;
+    text-transform: uppercase;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn.primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn.primary:hover {
+    background-color: #0056b3;
+}
+
+.btn.secondary {
+    background-color: var(--secondary-color);
+    color: #fff;
+    margin-top: 10px;
+}
+
+.btn.secondary:hover {
+    background-color: #5a6268;
+}
+
+.form-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.final-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+/* Layout de colunas */
+.grid-2-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+/* Estilo para listas e checkboxes */
+.checklist-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.checklist-list li {
+    background-color: #333;
+    border-radius: 8px;
+    padding: 8px;
+    flex: 1 1 200px;
+}
+
+.checklist-list label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.checklist-list input[type="checkbox"] {
+    accent-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
