@@ -87,7 +87,7 @@
                     <li><label><input type="checkbox" id="mat_lanterna" checked> 01 LANTERNA</label></li>
                     <li><label><input type="checkbox" id="mat_carregador" checked> 01 CARREGADOR</label></li>
                     <li><label><input type="checkbox" id="mat_monitor" checked> 01 MONITOR</label></li>
-                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 CADEIRA GIRATÓRIA</label></li>
+                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 CADEIRA GIRATORIA</label></li>
                 </ul>
             </section>
 
@@ -404,6 +404,7 @@
         if(document.getElementById('mat_lanterna')?.checked) materiais += "• 01 LANTERNA\n";
         if(document.getElementById('mat_carregador')?.checked) materiais += "• 01 CARREGADOR\n";
         if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 MONITOR\n";
+        if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 CADEIRA GIRATORIA\n";
         addSection("3. MATERIAL DO PLANTÃO", materiais || "Nenhum material selecionado.");
 
         const intervalo = `Hora Entrada: ${v('#intervaloEntrada') || 'N/A'} | Hora Saída: ${v('#intervaloSaida') || 'N/A'}\n(Monitoramento realizado pela Central de Monitoramento)`;
