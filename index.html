@@ -88,6 +88,10 @@
                     <li><label><input type="checkbox" id="mat_carregador" checked> 01 CARREGADOR</label></li>
                     <li><label><input type="checkbox" id="mat_monitor" checked> 01 MONITOR</label></li>
                     <li><label><input type="checkbox" id="mat_monitor" checked> 01 CADEIRA GIRATORIA</label></li>
+                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 MONITOR LED 32 MARCA AOC</label></li>
+                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 CAMERA WIFI 1MP C1C 6239</label></li>
+                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 CARTÃO DE MEMÓRIA 32GB PURPLE 4148</label></li>
+                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 MOUSE SEM FIO</label></li>
                 </ul>
             </section>
 
@@ -405,6 +409,10 @@
         if(document.getElementById('mat_carregador')?.checked) materiais += "• 01 CARREGADOR\n";
         if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 MONITOR\n";
         if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 CADEIRA GIRATORIA\n";
+        if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 MONITOR LED 32 MARCA AOC\n";
+        if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 CAMERA WIFI 1MP C1C 6239\n";
+        if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 CARTÃO DE MEMÓRIA 32GB PURPLE 4148\n";
+        if(document.getElementById('mat_monitor')?.checked) materiais += "• 01 MOUSE SEM FIO\n";
         addSection("3. MATERIAL DO PLANTÃO", materiais || "Nenhum material selecionado.");
 
         const intervalo = `Hora Entrada: ${v('#intervaloEntrada') || 'N/A'} | Hora Saída: ${v('#intervaloSaida') || 'N/A'}\n(Monitoramento realizado pela Central de Monitoramento)`;
