@@ -380,7 +380,7 @@
         // ==========================================
         if (contraCapaImg) {
             // Desenha a imagem ocupando a primeira página inteira (Sangria total)
-            doc.addImage(contraCapaImg, 'PNG', 0, 0, pageWidth, pageHeight);
+            doc.addImage(contraCapaImg, 'PNG', 4, 4, pageWidth, pageHeight);
         } else {
             // Fallback caso a imagem não carregue por algum motivo
             addHeader(doc);
