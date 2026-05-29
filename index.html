@@ -379,10 +379,17 @@
         // PÁGINA 1: CONTRA-CAPA (IMAGEM COMPLETA)
         // ==========================================
         if (contraCapaImg) {
-            // Desenha a imagem ocupando a primeira página inteira (Sangria total)
-            doc.addImage(contraCapaImg, 'PNG', 4, 4, pageWidth, pageHeight);
+            // Define o tamanho desejado para a imagem centralizada (Ex: 140mm de largura)
+            const imgWidth = 140;
+            const imgAspectRatio = contraCapaImg.width / contraCapaImg.height;
+            const imgHeight = imgWidth / imgAspectRatio;
+            
+            // Calcula as coordenadas exatas do centro do papel A4
+            const imgX = (pageWidth - imgWidth) / 2;
+            const imgY = (pageHeight - imgHeight) / 2;
+            
+            doc.addImage(contraCapaImg, 'PNG', imgX, imgY, imgWidth, imgHeight);
         } else {
-            // Fallback caso a imagem não carregue por algum motivo
             addHeader(doc);
             doc.setFont("Helvetica", "bold");
             doc.setFontSize(18);
