@@ -57,12 +57,15 @@
                     <label for="dataPlantao">Data do Plantão</label>
                     <input id="dataPlantao" type="date" class="input-field">
                 </div>
-                <div class="input-group">
-                    <label for="horario">Horário do Plantão</label>
-                    <select id="horario" class="input-field">
-                        <option>06:00 às 18:00</option>
-                        <option>18:00 às 06:00</option>
-                    </select>
+                <div class="grid-2-cols" style="margin-bottom: 15px;">
+                    <div class="input-group">
+                        <label for="plantaoEntrada">Horário Entrada</label>
+                        <input id="plantaoEntrada" type="time" class="input-field">
+                    </div>
+                    <div class="input-group">
+                        <label for="plantaoSaida">Horário Saída</label>
+                        <input id="plantaoSaida" type="time" class="input-field">
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="colaboradorPlantonista">Colaborador Plantonista</label>
@@ -82,6 +85,7 @@
                     <li><label><input type="checkbox" id="mat_celular" checked> 01 CELULAR MOTO E7 PLUS</label></li>
                     <li><label><input type="checkbox" id="mat_lanterna" checked> 01 LANTERNA</label></li>
                     <li><label><input type="checkbox" id="mat_carregador" checked> 01 CARREGADOR</label></li>
+                    <li><label><input type="checkbox" id="mat_monitor" checked> 01 MONITOR</label></li>
                     <li><label><input type="checkbox" id="mat_cadeira" checked> 01 CADEIRA GIRATORIA</label></li>
                     <li><label><input type="checkbox" id="mat_monitor_led" checked> 01 MONITOR LED 32 MARCA AOC</label></li>
                     <li><label><input type="checkbox" id="mat_camera" checked> 01 CAMERA WIFI 1MP C1C 6239</label></li>
@@ -398,7 +402,9 @@
 
         const dataInput = v('#dataPlantao');
         const dataFormatada = dataInput ? dataInput.split('-').reverse().join('/') : '26/05/2026';
-        const equipeInfo = `Data do Plantão: ${dataFormatada}\nHorário: ${v('#horario')}\nColaborador Plantonista: ${v('#colaboradorPlantonista')}`;
+        const hEntrada = v('#plantaoEntrada') || '--:--';
+        const hSaida = v('#plantaoSaida') || '--:--';
+        const equipeInfo = `Data do Plantão: ${dataFormatada}\nHorário do Plantão: ${hEntrada} às ${hSaida}\nColaborador Plantonista: ${v('#colaboradorPlantonista')}`;
         addSection("2. EQUIPE DE PLANTÃO", equipeInfo);
 
         // Captura dinâmica dos itens do checklist
